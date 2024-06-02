@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+
+.env
+.env.local
+.env.*.local
+.eslintcache
+*.log
+*.lock
+npm-debug.log*
+
+/build
+.DS_Store
+*.swp
+*.swo
