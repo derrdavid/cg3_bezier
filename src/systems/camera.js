@@ -26,13 +26,14 @@ export default class ToggleCamera {
 
     createOrtho(width, height) {
         const aspect = width / height;
-        const frustumSize = 20;
+        const frustumSize = 10; // Kleinerer Wert bringt die Kamera näher an den Ursprung
         const orthoCamera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2, frustumSize * aspect / 2,
             frustumSize / 2, frustumSize / -2,
             0.1, 1000
         );
-        orthoCamera.position.z = 10;
+        orthoCamera.position.z = 5; // Positionieren Sie die Kamera näher am Ursprung
+        orthoCamera.lookAt(new THREE.Vector3(0, 0, 0)); // Die Kamera auf den Ursprung ausrichten
         return orthoCamera;
     }
 }

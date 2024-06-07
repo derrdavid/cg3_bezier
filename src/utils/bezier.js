@@ -1,21 +1,29 @@
 import * as THREE from 'three';
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline';
 
-export function calculateCubicBezierPoint(t, points) {
-    if (points.length !== 4) {
-        throw new Error('Es müssen genau 4 Kontrollpunkte angegeben werden.');
+
+export default class BezierCurve {
+    constructor(points) {
+        this.points = points;
+        this.line = this.create(points);
     }
 
-    const [p0, p1, p2, p3] = points;
-
-    const term1 = p0.clone().multiplyScalar((1 - t) ** 3);
-    const term2 = p1.clone().multiplyScalar(3 * (1 - t) ** 2 * t);
-    const term3 = p2.clone().multiplyScalar(3 * (1 - t) * t ** 2);
-    const term4 = p3.clone().multiplyScalar(t ** 3);
-
-    return term1.add(term2).add(term3).add(term4);
+    create(points) {
+        let bezier_points = [];
+        for (let t = 0; t <= 1; t += 0.01) {
+            bezier_points.push(deCasteljau(points, t));
+        }
+        const line_geometry = new THREE.BufferGeometry().setFromPoints(bezier_points);
+        const line_material = new MeshLineMaterial({ color: 0xFFFFFF, lineWidth: 0.1 });
+        const line = new MeshLine();
+        line.setPoints(bezier_points);
+        line.setGeometry(line_geometry);
+        const lineMesh = new THREE.Mesh(line, line_material)
+        return lineMesh;
+    }
 }
 
-export function deCasteljau(points, t) {
+function deCasteljau(points, t) {
     if (points.length === 1) {
         return points[0];
     }
