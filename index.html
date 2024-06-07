@@ -13,11 +13,15 @@
 </head>
 
 <body>
+	<header>
+		<h1>Bézier-Kurven</h1>
+		<h2>David Derr [1671753], Ede Dust [1671753]</h2>
+	</header>
 	<div id="app-container">
 		<div id="canvas-container">
 			<div id="input-container">
-				<h1>Control Points</h1>
-				<button id="switchButton">Switch to 2D</button>
+				<label for="t-slider">t</label>
+				<input id="t-slider" type="range">
 				<div>
 					<label for="p0">Point 0:</label>
 					<input type="text" id="p0" placeholder="x,y,z" value="0,0,0">
@@ -35,6 +39,7 @@
 					<input type="text" id="p3" placeholder="x,y,z" value="4,0,0">
 				</div>
 				<button id="update-curve">Update Curve</button>
+				<button id="switchButton">Switch to 2D</button>
 			</div>
 		</div>
 	</div>

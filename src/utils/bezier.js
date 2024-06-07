@@ -16,7 +16,6 @@ export default class BezierCurve {
         const line_geometry = new THREE.BufferGeometry().setFromPoints(bezier_points);
         const line_material = new MeshLineMaterial({ color: 0xFFFFFF, lineWidth: 0.1 });
         const line = new MeshLine();
-        line.setPoints(bezier_points);
         line.setGeometry(line_geometry);
         const lineMesh = new THREE.Mesh(line, line_material)
         return lineMesh;

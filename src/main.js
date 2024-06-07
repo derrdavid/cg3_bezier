@@ -30,7 +30,7 @@ getPoints();
 const bezierCurve = new BezierCurve(points);
 scene.add(bezierCurve.line);
 
-const axesHelper = new THREE.AxesHelper( 10 );
+const axesHelper = new THREE.AxesHelper(20);
 scene.add( axesHelper );
 
 function animate() {
@@ -42,7 +42,7 @@ animate();
 
 
 document.getElementById('update-curve').addEventListener('click', () => {
-    line = setUpBezierLine(points);
+    //update logic
 });
 
 document.getElementById('switchButton').addEventListener('click', () => {

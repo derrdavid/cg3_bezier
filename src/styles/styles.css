@@ -1,8 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 :root {
-    --text-font: 'Courier New', Courier, monospace;
-    --text-color: #212529;
-    --bg-base-0: #e9ecef;
-    --bg-base: #f8f9fa;
+    --text-font: 'Inter', sans-serif;
+    --text-color: #ffffff;
+    --text-base-size: 10px;
+    --bg-base: #0c0f0a;
+    --btn-bg: #1f2421;
+    --btn-hover-bg: #323833;
+    --input-bg: #1f2421;
+    --input-border: #323833;
+    --focus-border: #ffffff;
+    --slider-track-color: #1f2421;
+    --slider-thumb-color: #ffffff;
+    --slider-thumb-border: #323833;
+}
+
+*{
+    font-size: var(--text-base-size);
 }
 
 p, h1, h2, h3, label {
@@ -11,36 +25,115 @@ p, h1, h2, h3, label {
 }
 
 h1 {
-    font-weight: 1000;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 500;
 }
 
-body{
-    background-color: var(--bg-base-0);
+h2 {
+    margin: 0;
+    font-size: 10px;
+    font-weight: 200;
+}
+
+header {
+    padding: 0.5rem 8.5rem;
+    border-bottom: 1px solid var(--text-color);
+}
+
+body {
+    overflow-y: hidden;
+    margin: 0;
+    background-color: var(--bg-base);
 }
 
 #app-container {
     z-index: 0;
-    padding: 3rem;
+    padding-inline: 3rem;
     background-color: var(--bg-base);
     margin-left: auto;
     margin-right: auto;
-    max-width: 75%;
+    max-width: 90%;
     height: 100vh;
 }
 
-#input-container{
+#input-container {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    gap: .25rem;
+    gap: .5rem;
     position: absolute;
-    padding: 2rem;
-    background-color: #dee2e6;
+    padding: 1rem;
+    background-color: var(--bg-base);
     z-index: 2;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #canvas-container {
     position: relative;
     z-index: 1;
-    height: 500px;
+    height: 100%;
     width: 100%;
+}
+
+button, input[type="text"] {
+    font-family: var(--text-font);
+    color: var(--text-color);
+    background-color: var(--btn-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    margin: 0.25rem 0;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+button:hover, input[type="text"]:hover {
+    background-color: var(--btn-hover-bg);
+}
+
+button:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--focus-border);
+}
+
+button {
+    cursor: pointer;
+}
+
+/* Styles for range inputs (sliders) */
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--slider-track-color);
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--slider-thumb-color);
+    border: 2px solid var(--slider-thumb-border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s, border-color 0.3s;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--slider-thumb-color);
+    border: 2px solid var(--slider-thumb-border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s, border-color 0.3s;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb,
+input[type="range"]:hover::-moz-range-thumb {
+    background: var(--btn-hover-bg);
+    border-color: var(--focus-border);
 }
