@@ -1,22 +1,19 @@
 import * as THREE from 'three';
 import { deCasteljau } from './utils/bezier';
-import { createPerspective, createOrtho } from './systems/camera';
+import ToggleCamera from './systems/camera';
 import { setupRenderer } from './systems/renderer';
 import { setupControls } from './systems/controls';
 
 // Initialisiere die Variablen
 const scene = new THREE.Scene();
 const canvas = document.getElementById('canvas-container');
-const rect = canvas.getBoundingClientRect();
-const width = rect.width;
-const height = rect.height;
+const width = canvas.getBoundingClientRect().width;
+const height = canvas.getBoundingClientRect().height;
 
-const perspectiveCamera = createPerspective(width, height);
-const orthoCamera = createOrtho(width, height);
-let currentCamera = perspectiveCamera;
-
+const camera = new ToggleCamera(width, height);
 const renderer = setupRenderer(width, height);
-const controls = setupControls(currentCamera, renderer.domElement);
+
+const controls = setupControls(camera.current, renderer.domElement);
 
 const inputFields = ['p0', 'p1', 'p2', 'p3'].map(id => document.getElementById(id));
 let points = [];
@@ -65,7 +62,7 @@ function drawBezier() {
 
     controls.update();
 
-    renderer.render(scene, currentCamera);
+    renderer.render(scene, camera.current);
     requestAnimationFrame(drawBezier);
 }
 
@@ -92,7 +89,7 @@ function updateControlPoints() {
     });
 
     // Renderer-Szene aktualisieren
-    renderer.render(scene, currentCamera);
+    renderer.render(scene, camera.current);
 }
 
 // Starte die Animation
@@ -115,13 +112,7 @@ updateCurve.addEventListener('click', () => {
 
 // Umschalt-Button
 document.getElementById('switchButton').addEventListener('click', () => {
-    if (currentCamera === perspectiveCamera) {
-        currentCamera = orthoCamera;
-        document.getElementById('switchButton').innerText = 'Switch to 3D';
-    } else {
-        currentCamera = perspectiveCamera;
-        document.getElementById('switchButton').innerText = 'Switch to 2D';
-    }
+    camera.toggle();
     // Renderer-Szene mit neuer Kamera aktualisieren
-    renderer.render(scene, currentCamera);
+    renderer.render(scene, camera.current);
 });
