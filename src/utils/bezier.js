@@ -1,24 +1,23 @@
 import * as THREE from 'three';
-import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline';
-
+import { MeshLine, MeshLineMaterial } from 'three.meshline';
 
 export default class BezierCurve {
     constructor(points) {
-        this.points = points;
-        this.line = this.create(points);
+        this.control_points = points;
+        this.curve_points = [];
+        this.line_material = new MeshLineMaterial({ color: 0xFFFFFF, lineWidth: 0.1 });
+        this.meshline = new MeshLine();
+        this.line = new THREE.Mesh(this.meshline, this.line_material);
+        this.update(1);
     }
 
-    create(points) {
-        let bezier_points = [];
-        for (let t = 0; t <= 1; t += 0.01) {
-            bezier_points.push(deCasteljau(points, t));
+    update(t) {
+        this.curve_points = [];
+        for (let i = 0; i <= t; i += 0.01) {
+            this.curve_points.push(deCasteljau(this.control_points, i));
         }
-        const line_geometry = new THREE.BufferGeometry().setFromPoints(bezier_points);
-        const line_material = new MeshLineMaterial({ color: 0xFFFFFF, lineWidth: 0.1 });
-        const line = new MeshLine();
-        line.setGeometry(line_geometry);
-        const lineMesh = new THREE.Mesh(line, line_material)
-        return lineMesh;
+        const line_geometry = new THREE.BufferGeometry().setFromPoints(this.curve_points);
+        this.meshline.setGeometry(line_geometry);
     }
 }
 
@@ -39,6 +38,3 @@ function deCasteljau(points, t) {
 
     return deCasteljau(newPoints, t);
 }
-
-
-
