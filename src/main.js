@@ -41,7 +41,7 @@ document.getElementById('animate-button').addEventListener('click', () => {
 });
 function animate() {
     if (isAnimate) {
-        t += 0.01;
+        t += 0.005;
         if (t > 1) t = 0;
         slider.value = t;
     }
@@ -54,7 +54,8 @@ animate();
 
 
 document.getElementById('update-curve').addEventListener('click', () => {
-    //update logic
+    getPoints();
+    bezierCurve.control_points = control_points;
 });
 
 document.getElementById('switchButton').addEventListener('click', () => {
