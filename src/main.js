@@ -28,8 +28,7 @@ const getPoints = () => {
 getPoints();
 const slider = document.getElementById('t-slider');
 
-const bezierCurve = new BezierCurve(control_points);
-scene.add(bezierCurve.line);
+const bezierCurve = new BezierCurve(control_points, scene);
 
 const axesHelper = new THREE.AxesHelper(20);
 scene.add(axesHelper);
