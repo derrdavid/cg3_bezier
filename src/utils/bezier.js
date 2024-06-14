@@ -1,40 +1,50 @@
 import * as THREE from 'three';
-import { MeshLine, MeshLineMaterial } from 'three.meshline';
+import Line from './curve';
 
 export default class BezierCurve {
     constructor(points, scene) {
-        this.control_points = points;
         this.scene = scene;
+        this.controlPoints = points;
+        this.supportLines = [];
+        this.supportLinePoints = [];
+        this.step = 0.01;
+        this.colors = [0xff00ff, 0xffff00, 0x00ffff];
 
-        this.curve_points = [];
-        this.support_lines = [];
+        this.curve = new Line();
+        this.scene.add(this.curve.line);
 
-        this.line_material = new MeshLineMaterial({ color: 0xFFFFFF, lineWidth: 0.1 });
-        this.meshline = new MeshLine();
-        this.line = new THREE.Mesh(this.meshline, this.line_material);
-
-        this.support_line_material = new MeshLineMaterial({ color: 0x00FFF0, lineWidth: 0.02 });
-        this.support_line_meshes = [];
-
+        this.initSupportLines();
         this.update(0);
-        this.scene.add(this.line);
+    }
+
+    initSupportLines() {
+        for (let i = 0; i < this.controlPoints.length - 1; i++) {
+            const color = this.colors[i];
+            const supportLine = new Line(color, 0.02);
+            this.supportLines.push(supportLine);
+            this.scene.add(supportLine.line);
+        }
     }
 
     update(t) {
-        this.curve_points = [];
-        
-        for (let i = 0; i <= t; i += 0.01) {
-            this.support_lines = [];
-            this.curve_points.push(this.deCasteljau(this.control_points, i));
+        const points = [];
+
+        for (let i = 0; i <= t; i += this.step) {
+            this.supportLinePoints = [];
+            points.push(this.deCasteljau(this.controlPoints, i));
         }
-                
-        const line_geometry = new THREE.BufferGeometry().setFromPoints(this.curve_points);
-        this.meshline.setGeometry(line_geometry);
-        this.updateSupportLines();
+
+        this.curve.setPoints(points);  
+
+        this.supportLinePoints.forEach((supportPoints, i) => {
+            if (this.supportLines[i]) {
+                this.supportLines[i].setPoints(supportPoints);
+            }
+        });
     }
 
     deCasteljau(points, t) {
-        this.support_lines.push(points);
+        this.supportLinePoints.push(points); 
 
         if (points.length === 1) {
             return points[0];
@@ -51,27 +61,5 @@ export default class BezierCurve {
         }
 
         return this.deCasteljau(newPoints, t);
-    }
-
-    updateSupportLines() {
-        this.clearSupportLines();
-
-        this.support_lines.forEach((support_points) => {
-            const supportLineGeometry = new THREE.BufferGeometry().setFromPoints(support_points);
-            const supportLine = new MeshLine();
-            supportLine.setGeometry(supportLineGeometry);
-            const supportLineMesh = new THREE.Mesh(supportLine, this.support_line_material);
-            this.support_line_meshes.push(supportLineMesh);
-            this.scene.add(supportLineMesh);
-        });
-    }
-
-    clearSupportLines() {
-        this.support_line_meshes.forEach(line => {
-            this.scene.remove(line);
-            line.geometry.dispose();
-            line.material.dispose();
-        });
-        this.support_line_meshes = [];
     }
 }

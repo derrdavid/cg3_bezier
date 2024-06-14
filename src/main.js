@@ -26,6 +26,7 @@ const getPoints = () => {
     });
 }
 getPoints();
+
 const slider = document.getElementById('t-slider');
 
 const bezierCurve = new BezierCurve(control_points, scene);
@@ -54,7 +55,7 @@ animate();
 
 document.getElementById('update-curve').addEventListener('click', () => {
     getPoints();
-    bezierCurve.control_points = control_points;
+    bezierCurve.controlPoints = control_points;
 });
 
 document.getElementById('switchButton').addEventListener('click', () => {
