@@ -20,20 +20,20 @@ export default class ToggleCamera {
         perspectiveCamera.position.z = 10;
         perspectiveCamera.position.y = 2;
         perspectiveCamera.position.x = 10;
-        perspectiveCamera.rotation.y = Math.PI / 4; // Statt rotateY verwenden
+        perspectiveCamera.rotation.y = Math.PI / 4; 
         return perspectiveCamera;
     }
 
     createOrtho(width, height) {
         const aspect = width / height;
-        const frustumSize = 10; // Kleinerer Wert bringt die Kamera näher an den Ursprung
+        const frustumSize = 10;
         const orthoCamera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2, frustumSize * aspect / 2,
             frustumSize / 2, frustumSize / -2,
             0.1, 1000
         );
-        orthoCamera.position.z = 5; // Positionieren Sie die Kamera näher am Ursprung
-        orthoCamera.lookAt(new THREE.Vector3(0, 0, 0)); // Die Kamera auf den Ursprung ausrichten
+        orthoCamera.position.z = 5;
+        orthoCamera.lookAt(new THREE.Vector3(0, 0, 0));
         return orthoCamera;
     }
 }
