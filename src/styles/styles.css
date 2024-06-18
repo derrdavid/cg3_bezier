@@ -16,7 +16,7 @@
 }
 
 *{
-    font-size: var(--text-base-size);
+    font-size: calc(var(--text-base-size) * .8);
 }
 
 p, h1, h2, h3, label {
@@ -26,30 +26,29 @@ p, h1, h2, h3, label {
 
 h1 {
     margin: 0;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: calc(var(--text-base-size) * 1.3);
+    font-weight: 600;
 }
 
 h2 {
     margin: 0;
-    font-size: 10px;
+    font-size: var(--text-base-size);
     font-weight: 200;
 }
 
 header {
-    padding: 0.5rem 8.5rem;
+    padding: 0.5rem 3rem;
     border-bottom: 1px solid var(--text-color);
 }
 
 body {
-    overflow-y: hidden;
+    overflow: hidden;
     margin: 0;
     background-color: var(--bg-base);
 }
 
 #app-container {
     z-index: 0;
-    padding-inline: 3rem;
     background-color: var(--bg-base);
     margin-left: auto;
     margin-right: auto;
@@ -136,4 +135,14 @@ input[type="range"]:hover::-webkit-slider-thumb,
 input[type="range"]:hover::-moz-range-thumb {
     background: var(--btn-hover-bg);
     border-color: var(--focus-border);
+}
+
+@media screen and (min-width: 750px) {
+    *{
+        font-size: var(--text-base-size);
+    }
+    header {
+        padding: 0.5rem 8rem;
+        border-bottom: 1px solid var(--text-color);
+    }
 }
