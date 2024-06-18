@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Line from './curve';
 
-export default class BezierCurve {
+export class BezierCurve {
     constructor(points, scene) {
         this.scene = scene;
         this.controlPoints = points;
