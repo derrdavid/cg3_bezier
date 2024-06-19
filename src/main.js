@@ -17,7 +17,9 @@ const updateButton = document.getElementById('update-curve');
 const toggleButton = document.getElementById('switchButton');
 const animateButton = document.getElementById('animate-button');
 
+let isAnimate = false;
 let control_points = [];
+
 const updateControlPoints = () => {
     inputFields.forEach((field, index) => {
         const values = field.value.split(',').map(Number);
@@ -52,7 +54,6 @@ const axesHelper = new THREE.AxesHelper(20);
 scene.add(axesHelper);
 
 let t = slider.value;
-let isAnimate = false;
 function animate() {
     if (isAnimate) {
         t += 0.005;
