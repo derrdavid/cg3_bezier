@@ -52,7 +52,7 @@ let t = slider.value;
 
 function animate() {
     if (isAnimate) {
-        t += 0.005;
+        t += 0.005 / 2;
         if (t > 1) t = 0;
         slider.value = t;
     }

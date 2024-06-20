@@ -9,6 +9,7 @@ export function setupControls(camera, domElement) {
     controls.maxPolarAngle = Math.PI / 2;
     return controls;
 }
+
 export class SphereManager {
     constructor(scene, camera, inputFields) {
         this.scene = scene;
@@ -50,15 +51,15 @@ export class SphereManager {
 
     createSpheres() {
         this.controlPoints.forEach((point, index) => {
-            const geometry = new THREE.SphereGeometry(0.5, 32, 32);  // Sphere with smaller radius
+            const geometry = new THREE.SphereGeometry(0.05, 32, 32);  // Sphere with smaller radius
             const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.set(point.x, point.y, point.z);
             this.scene.add(sphere);
             this.spheres.push(sphere);
 
-            // Create a bounding sphere for raycasting
-            const boundingSphere = new THREE.Sphere(point, 0.1);
+            // Create a bounding sphere for raycasting with radius 0.5
+            const boundingSphere = new THREE.Sphere(point.clone(), 1);
             this.boundingSpheres.push(boundingSphere);
         });
     }
@@ -70,10 +71,13 @@ export class SphereManager {
 
     onMouseDown(event) {
         this.raycaster.setFromCamera(this.pointer, this.camera.current);
-        const intersects = this.raycaster.intersectObjects(this.spheres);
+        const intersects = this.boundingSpheres.filter((sphere, index) => {
+            return this.raycaster.ray.intersectsSphere(sphere);
+        });
+
         if (intersects.length > 0 && this.camera.current == this.camera.ortho) {
             this.isDragging = true;
-            this.draggedSphereIndex = this.spheres.indexOf(intersects[0].object);
+            this.draggedSphereIndex = this.boundingSpheres.indexOf(intersects[0]);
         }
     }
 
@@ -85,7 +89,10 @@ export class SphereManager {
     onMouseMove() {
         if (this.isDragging && this.draggedSphereIndex !== -1) {
             this.raycaster.setFromCamera(this.pointer, this.camera.current);
-            const intersects = this.raycaster.intersectObjects(this.spheres);
+            const intersects = this.boundingSpheres.filter((sphere, index) => {
+                return this.raycaster.ray.intersectsSphere(sphere);
+            });
+
             if (intersects.length > 0) {
                 const sphere = this.spheres[this.draggedSphereIndex];
                 const newPoint = new THREE.Vector3(this.pointer.x, this.pointer.y, sphere.position.z);
