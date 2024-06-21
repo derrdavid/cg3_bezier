@@ -158,7 +158,7 @@ export class ClothGeometry {
             for(let j = 1; j < this.meshSize; j++){
                 let edge = new ForceLine(this.meshPoints[i+j-1], this.meshPoints[i+j]);
                 edge.update();
-                //this.scene.add(edge.linetodraw);
+                this.scene.add(edge.linetodraw);
                 this.meshEdges.push(edge);
             }
         }
@@ -166,18 +166,19 @@ export class ClothGeometry {
             for(let i = this.meshSize; i < this.meshPoints.length; i += this.meshSize){
                 let edge = new ForceLine(this.meshPoints[j+i-this.meshSize], this.meshPoints[j+i]);
                 edge.update();
-                //this.scene.add(edge.linetodraw);
+                this.scene.add(edge.linetodraw);
                 this.meshEdges.push(edge);
             }
         }
+        /*
         //um die nachbaren einzelner punkte zu prüfen
         for(let i = 0;i < this.meshPoints[18].neigbours.length; i++){
-            console.log(":)");
+            //console.log(":)");
             let edge = new ForceLine(this.meshPoints[18], this.meshPoints[18].neigbours[i]);
                 edge.update();
                 this.scene.add(edge.linetodraw);
                 this.meshEdges.push(edge);
-        }
+        }*/
     }
 
     update(){
