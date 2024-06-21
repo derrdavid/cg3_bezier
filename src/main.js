@@ -20,7 +20,7 @@ const updateButton = document.getElementById('update-curve');
 const toggleButton = document.getElementById('switchButton');
 const animateButton = document.getElementById('animate-button');
 
-const sphereManager = new ControlPointsManager(scene, camera, inputFields);
+const sphereManager = new ControlPointsManager(canvas, scene, camera, inputFields);
 const bezierCurve = new BezierCurve(sphereManager.controlPoints, scene);
 const axesHelper = new THREE.AxesHelper(20);
 scene.add(axesHelper);
