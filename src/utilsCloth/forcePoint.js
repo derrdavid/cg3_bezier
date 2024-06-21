@@ -7,15 +7,15 @@ export class ForcePoint {
         this.shearPoints = [];
         this.bendPoints = [];
 
-        this.springConstant = 400;
-        this.shearConstant = 200;
+        this.springConstant = 50;
+        this.shearConstant = 50;
         this.bendConstant = 50;
 
         this.restingLengthConstant = 0.4;
 
-        this.stepLenght = 0.0003;
+        this.stepLenght = 0.003;
 
-        this.mass = 1;
+        this.mass = 0.01;
 
         this.isPin = false;
         this.vertex = null;
@@ -108,10 +108,27 @@ export class ForcePoint {
     }
     //--updates--
     updateVertexPos(pos){
-
         this.vertex.position.set(pos.x, pos.y, pos.z);
     }
     updateVertexColor(col){
         this.vertex.material.color.setHex( col );
+    }
+    updateSpringConstant(value){
+        this.springConstant = value;
+    }
+    updateShearConstant(value){
+        this.shearConstant = value;
+    }
+    updateBendConstant(value){
+        this.bendConstant = value;
+    }
+    updateRestingLenght(value){
+        this.restingLengthConstant = value;
+    }
+    updateStepLength(value){
+        this.stepLenght = value;
+    }
+    updateMass(value){
+        this.mass = value;
     }
 }

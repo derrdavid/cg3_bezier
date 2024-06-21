@@ -178,7 +178,7 @@ export class ClothGeometry {
                 edge.update();
                 this.scene.add(edge.linetodraw);
                 this.meshEdges.push(edge);
-        }*/
+        }*/ 
     }
 
     update(){
@@ -191,6 +191,21 @@ export class ClothGeometry {
             this.meshEdges[i].update();
         }
         //console.log(this.meshPoints[0].position);
+    }
+    setNewRestingLength(value){
+        for(let i = 0; i < this.meshPoints.length; i ++){
+            this.meshPoints[i].updateRestingLenght(value);
+        }
+    }
+    setNewStepLenght(value){
+        for(let i = 0; i < this.meshPoints.length; i ++){
+            this.meshPoints[i].updateStepLength(value);
+        }
+    }
+    setNewMass(value){
+        for(let i = 0; i < this.meshPoints.length; i ++){
+            this.meshPoints[i].updateMass(value);
+        }
     }
 
     addsphere(point){
