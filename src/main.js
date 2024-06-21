@@ -3,6 +3,7 @@ import { BezierCurve } from './utils/bezier';
 import ToggleCamera from './systems/camera';
 import { setupRenderer } from './systems/renderer';
 import { setupControls, ControlPointsManager } from './systems/controls';
+import { BernsteinPolinom } from './utils/bernsteinPolinom';
 
 const scene = new THREE.Scene();
 const canvas = document.getElementById('canvas-container');
