@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Line from './curve';
+import CustomLine from './customline';
 import { BezierCurve } from './bezier';
 
 export class BernsteinPolinom{

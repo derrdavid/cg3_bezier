@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import Line from '../utils/curve';
 import { ForcePoint } from './forcePoint';
 export class ForceLine {
     constructor(point1, point2) {

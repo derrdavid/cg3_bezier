@@ -9,7 +9,7 @@ const canvas = document.getElementById('canvas-container');
 const fpsLabel = document.getElementById("fpsLabel");
 const { width, height } = canvas.getBoundingClientRect();
 const camera = new ToggleCamera(width, height);
-const renderer = setupRenderer(width, height);
+const renderer = setupRenderer(canvas, width, height);
 const controls = setupControls(camera.current, renderer.domElement);
 
 const cloth = new ClothGeometry(scene);
