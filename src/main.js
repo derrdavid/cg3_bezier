@@ -19,6 +19,7 @@ const slider = document.getElementById('t-slider');
 const updateButton = document.getElementById('update-curve');
 const toggleButton = document.getElementById('switchButton');
 const animateButton = document.getElementById('animate-button');
+const showaxis_checkbox = document.getElementById('show-axis');
 
 const sphereManager = new ControlPointsManager(canvas, scene, camera, inputFields);
 sphereManager.createSpheres();
@@ -41,7 +42,6 @@ function animate() {
     renderer.render(scene, camera.current);
     requestAnimationFrame(animate);
 }
-
 animate();
 
 
@@ -66,4 +66,8 @@ inputFields.forEach((field, index) => {
     field.addEventListener('change', () => {
         sphereManager.updateControlPoints();
     });
+});
+
+showaxis_checkbox.addEventListener('change', () => {
+    axesHelper.visible = showaxis_checkbox.checked;
 });
