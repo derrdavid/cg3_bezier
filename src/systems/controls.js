@@ -5,33 +5,35 @@ export function setupControls(camera, domElement) {
     const controls = new OrbitControls(camera, domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
-    controls.screenSpacePanning = false;
-    controls.maxPolarAngle = Math.PI / 2;
     return controls;
 }
 
-export class SphereManager {
+export class ControlPointsManager {
     constructor(scene, camera, inputFields) {
         this.scene = scene;
         this.camera = camera;
         this.inputFields = inputFields;
+        
         this.controlPoints = [];
         this.spheres = [];
         this.boundingSpheres = [];
         this.isDragging = false;
         this.draggedSphereIndex = -1;
 
+        this.raycaster = new THREE.Raycaster();
+        this.pointer = new THREE.Vector2();
+
         this.updateControlPoints();
         this.createSpheres();
+        this.setupEventListeners();
+    }
 
+    setupEventListeners() {
         window.addEventListener('pointermove', this.onPointerMove.bind(this));
         window.addEventListener('mousedown', this.onMouseDown.bind(this));
         window.addEventListener('mouseup', this.onMouseUp.bind(this));
         window.addEventListener('mousemove', this.onMouseMove.bind(this));
-
-        this.raycaster = new THREE.Raycaster();
-        this.pointer = new THREE.Vector2();
-    }
+    };
 
     updateControlPoints() {
         this.inputFields.forEach((field, index) => {
@@ -50,15 +52,15 @@ export class SphereManager {
     }
 
     createSpheres() {
-        this.controlPoints.forEach((point, index) => {
-            const geometry = new THREE.SphereGeometry(0.05, 32, 32);  // Sphere with smaller radius
+        this.controlPoints.forEach((point) => {
+            const geometry = new THREE.SphereGeometry(0.05, 32, 32);
             const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
             const sphere = new THREE.Mesh(geometry, material);
+
             sphere.position.set(point.x, point.y, point.z);
             this.scene.add(sphere);
             this.spheres.push(sphere);
 
-            // Create a bounding sphere for raycasting with radius 0.5
             const boundingSphere = new THREE.Sphere(point.clone(), 1);
             this.boundingSpheres.push(boundingSphere);
         });
@@ -71,7 +73,7 @@ export class SphereManager {
 
     onMouseDown(event) {
         this.raycaster.setFromCamera(this.pointer, this.camera.current);
-        const intersects = this.boundingSpheres.filter((sphere, index) => {
+        const intersects = this.boundingSpheres.filter((sphere) => {
             return this.raycaster.ray.intersectsSphere(sphere);
         });
 
@@ -89,7 +91,7 @@ export class SphereManager {
     onMouseMove() {
         if (this.isDragging && this.draggedSphereIndex !== -1) {
             this.raycaster.setFromCamera(this.pointer, this.camera.current);
-            const intersects = this.boundingSpheres.filter((sphere, index) => {
+            const intersects = this.boundingSpheres.filter((sphere) => {
                 return this.raycaster.ray.intersectsSphere(sphere);
             });
 
@@ -97,15 +99,13 @@ export class SphereManager {
                 const sphere = this.spheres[this.draggedSphereIndex];
                 const newPoint = new THREE.Vector3(this.pointer.x, this.pointer.y, sphere.position.z);
                 newPoint.unproject(this.camera.current);
-                if (this.camera.current.isOrthographicCamera) {
-                    newPoint.z = sphere.position.z;
-                }
+                newPoint.z = sphere.position.z;
+                
                 sphere.position.set(newPoint.x, newPoint.y, newPoint.z);
                 const { x, y, z } = sphere.position;
                 this.controlPoints[this.draggedSphereIndex].set(x, y, z);
                 this.inputFields[this.draggedSphereIndex].value = `${x.toFixed(1)},${y.toFixed(1)},${z.toFixed(1)}`;
 
-                // Update bounding sphere position
                 this.boundingSpheres[this.draggedSphereIndex].center.set(x, y, z);
             }
         }
