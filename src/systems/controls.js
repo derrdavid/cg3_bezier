@@ -10,12 +10,12 @@ export function setupControls(camera, domElement) {
 }
 
 export class ControlPointsManager {
-    constructor(canvas, scene, camera, inputFields) {
+    constructor(canvas, scene, camera, inputFields = null, controlPoints = []) {
         this.scene = scene;
         this.canvas = canvas;
         this.camera = camera;
         this.inputFields = inputFields;
-        
+
         this.controlPoints = [];
         this.spheres = [];
         this.boundingSpheres = [];
@@ -26,7 +26,6 @@ export class ControlPointsManager {
         this.pointer = new THREE.Vector2();
 
         this.updateControlPoints();
-        this.createSpheres();
         this.setupEventListeners();
     }
 
@@ -38,19 +37,21 @@ export class ControlPointsManager {
     }
 
     updateControlPoints() {
-        this.inputFields.forEach((field, index) => {
-            const values = field.value.split(',').map(Number);
-            if (values.length === 3) {
-                const point = new THREE.Vector3(values[0], values[1], values[2]);
-                this.controlPoints[index] = point;
-                if (this.spheres[index]) {
-                    this.spheres[index].position.set(point.x, point.y, point.z);
-                    this.boundingSpheres[index].center.set(point.x, point.y, point.z);
+        if (this.inputFields !== null) {
+            this.inputFields.forEach((field, index) => {
+                const values = field.value.split(',').map(Number);
+                if (values.length === 3) {
+                    const point = new THREE.Vector3(values[0], values[1], values[2]);
+                    this.controlPoints[index] = point;
+                    if (this.spheres[index]) {
+                        this.spheres[index].position.set(point.x, point.y, point.z);
+                        this.boundingSpheres[index].center.set(point.x, point.y, point.z);
+                    }
+                } else {
+                    console.error('Each input field must have exactly three values separated by commas.');
                 }
-            } else {
-                console.error('Each input field must have exactly three values separated by commas.');
-            }
-        });
+            });
+        }
     }
 
     createSpheres() {
@@ -103,11 +104,13 @@ export class ControlPointsManager {
                 const newPoint = new THREE.Vector3(this.pointer.x, this.pointer.y, 0);
                 newPoint.unproject(this.camera.current);
                 newPoint.z = sphere.position.z;
-                
+
                 sphere.position.set(newPoint.x, newPoint.y, newPoint.z);
                 const { x, y, z } = sphere.position;
                 this.controlPoints[this.draggedSphereIndex].set(x, y, z);
-                this.inputFields[this.draggedSphereIndex].value = `${x.toFixed(1)},${y.toFixed(1)},${z.toFixed(1)}`;
+                if (this.inputFields !== null) {
+                    this.inputFields[this.draggedSphereIndex].value = `${x.toFixed(1)},${y.toFixed(1)},${z.toFixed(1)}`;
+                }
 
                 this.boundingSpheres[this.draggedSphereIndex].center.set(x, y, z);
             }
