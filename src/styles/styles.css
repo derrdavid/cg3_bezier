@@ -156,29 +156,30 @@ input[type="range"]:hover::-moz-range-thumb {
 }
 
 .topnav {
-    background-color: #333;
+    background-color: var(--btn-bg); 
     overflow: hidden;
 }
 
 .topnav a {
     float: left;
-    color: #f2f2f2;
+    color: var(--text-color); 
     text-align: center;
-    padding: 14px 16px;
+    padding: 1rem 2rem;
     text-decoration: none;
-    font-size: 17px;
+    font-family: var(--text-font); 
+    font-size: calc(var(--text-base-size) * 1.2);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .topnav a:hover {
-    background-color: #ddd;
-    color: black;
+    background-color: var(--btn-hover-bg);
+    color: var(--focus-border);
 }
 
 .topnav a.active {
     background-color: #757575;
-    color: white;
+    color: var(--text-color);
 }
-
 
 .t-slider-label {
     display: flex;
