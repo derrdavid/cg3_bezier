@@ -3,6 +3,7 @@ import { BezierCurve } from './utils/bezier';
 import ToggleCamera from './systems/camera';
 import { setupRenderer } from './systems/renderer';
 import { setupControls } from './systems/controls';
+import { BernsteinPolinom } from './utils/bernsteinPolinom';
 
 const scene = new THREE.Scene();
 const canvas = document.getElementById('canvas-container');
@@ -48,6 +49,7 @@ animateButton.addEventListener('click', () => {
 
 updateControlPoints();
 const bezierCurve = new BezierCurve(control_points, scene);
+const bernsteinLines = new BernsteinPolinom(control_points, scene);
 const axesHelper = new THREE.AxesHelper(20);
 scene.add(axesHelper);
 
@@ -60,6 +62,7 @@ function animate() {
         slider.value = t;
     }
     bezierCurve.update(slider.value);
+    bernsteinLines.update(slider.value);
     controls.update();
     renderer.render(scene, camera.current);
     requestAnimationFrame(animate);

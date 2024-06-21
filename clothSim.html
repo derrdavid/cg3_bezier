@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>My first three.js app</title>
+	<link rel="stylesheet" href="./src/styles/styles.css">
+	<style>
+		body {
+			margin: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>Cloth-Simultion</h1>
+		<h2>David Derr [1671753], Ede Dust [1671753]</h2>
+	</header>
+	<nav class="topnav">
+		<a href="./index.html">Beizer</a>
+		<a class="active" href="./clothSim.html">Cloth</a>
+    </nav>
+	<div id="app-container">
+		<div id="canvas-container">
+			<div id="input-container">
+				<label id = "fpsLabel" for="fps">fps : 00</label>
+				<div id = "controlls">
+					<label for="strech-slider">Strech</label>
+					<input id="strech-slider" type="range" min="0.0" max="1.0" step="0.01" value="1.0">
+					<label for="shear-slider">Shear</label>
+					<input id="shear-slider" type="range" min="0.0" max="1.0" step="0.01" value="1.0">
+					<label for="bend-slider">Bend</label>
+					<input id="bend-slider" type="range" min="0.0" max="1.0" step="0.01" value="1.0">
+					<label for="strech-slider">Strech</label>
+					<input id="strech-slider" type="range" min="0.0" max="1.0" step="0.01" value="1.0">
+					<label for="shear-slider">Shear</label>
+					<input id="shear-slider" type="range" min="0.0" max="1.0" step="0.01" value="1.0">
+					<label for="bend-slider">Bend</label>
+					<input id="bend-slider" type="range" min="0.0" max="1.0" step="0.01" value="1.0">
+				</div>
+			</div>
+		</div>
+	</div>
+
+    </div>
+    <script type="module" src="src/mainCloth.js"></script>
+</body>
+
+</html>
