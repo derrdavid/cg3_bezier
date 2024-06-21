@@ -20,7 +20,7 @@ export default class ToggleCamera {
         perspectiveCamera.position.z = 10;
         perspectiveCamera.position.y = 2;
         perspectiveCamera.position.x = 10;
-        perspectiveCamera.rotation.y = Math.PI / 4; 
+        perspectiveCamera.rotation.y = Math.PI / 4;
         return perspectiveCamera;
     }
 

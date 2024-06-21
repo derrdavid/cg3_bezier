@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { MeshLine, MeshLineMaterial } from 'three.meshline';
 
-export default class Line {
+export default class CustomLine {
     constructor(color = 0xFFFFFF, lineWidth = 0.1) {
         this.lineMaterial = new MeshLineMaterial({ color, lineWidth });
         this.meshline = new MeshLine();
