@@ -1,7 +1,17 @@
 import * as THREE from 'three';
+import { temp } from 'three/examples/jsm/nodes/Nodes.js';
+
+const CALC_METHOD = {
+    EULER: 'Euler',
+    MIDPOINT: 'Midpoint',
+    RUNGE: 'Runge'
+};
+
 export class ForcePoint {
     constructor(point) {
         this.position = point;
+
+        this.calcMethod = CALC_METHOD.RUNGE;
 
         this.neigbours = [];
         this.shearPoints = [];
@@ -23,12 +33,43 @@ export class ForcePoint {
     }
     updateStep1(){
         if(!this.isPin){
-            this.calculateForce();
+            let tmpPos;
+            switch(this.calcMethod){
+                case CALC_METHOD.EULER:
+                    this.calculateForce(this.position);
+                    this.position = this.determineNewPosition(this.position, this.stepLenght, this.forceVector);
+                    break;
+
+                case CALC_METHOD.MIDPOINT:
+                    this.calculateForce(this.position);
+                    tmpPos = this.determineNewPosition(this.position, this.stepLenght / 2, this.forceVector);
+                    this.calculateForce(tmpPos);
+                    this.position = this.determineNewPosition(tmpPos, this.stepLenght / 2, this.forceVector);
+                    break;
+
+                case CALC_METHOD.RUNGE:
+                    let k1 = this.calculateForce(this.position); 
+                    
+                    tmpPos = this.determineNewPosition(this.position, this.stepLenght / 2, k1);
+                    let k2 = this.calculateForce(tmpPos);
+
+                    tmpPos = this.determineNewPosition(this.position, this.stepLenght / 2, k2);
+                    let k3 = this.calculateForce(tmpPos);
+
+                    tmpPos = this.determineNewPosition(this.position, this.stepLenght, k3);
+                    let k4 = this.calculateForce(tmpPos);
+
+                    k2.multiplyScalar(2);
+                    k3.multiplyScalar(2);
+                    const newForceVector = new THREE.Vector3(0,0,0).add(k1).add(k2).add(k3).add(k4);
+
+                    this.position = this.determineNewPosition(this.position, this.stepLenght / 6, newForceVector);
+                    break;
+            }
         }
     }
     updateStep2(){
         if(!this.isPin){
-            this.determineNewPosition();
             this.updateVertexPos(this.position);
         }
     }
@@ -45,42 +86,44 @@ export class ForcePoint {
         this.vertex = sphere;
     }
 
-    determineNewPosition(){
-        this.position.add(this.eulerValue(this.stepLenght));
+    determineNewPosition(curPos, stepLenght, force){
+        let pos = new THREE.Vector3(curPos.x, curPos.y, curPos.z);
+        pos.add(this.eulerValue(stepLenght, force));
+        return pos;
     }
 
     //--math--
-    calculateForce(){
+    calculateForce(curPos){
         const resultingForce = new THREE.Vector3(0,0,0);
 
         //strech
         for(let i = 0; i < this.neigbours.length; i++){
             let direction = new THREE.Vector3(
-                this.neigbours[i].position.x - this.position.x, 
-                this.neigbours[i].position.y - this.position.y, 
-                this.neigbours[i].position.z - this.position.z,).normalize();
+                this.neigbours[i].position.x - curPos.x, 
+                this.neigbours[i].position.y - curPos.y, 
+                this.neigbours[i].position.z - curPos.z,).normalize();
 
-            direction = direction.multiplyScalar(this.calculateSpringForce(this.position, this.neigbours[i].position, this.restingLengthConstant, this.springConstant));
+            direction = direction.multiplyScalar(this.calculateSpringForce(curPos, this.neigbours[i].position, this.restingLengthConstant, this.springConstant));
             resultingForce.add(direction);
         }
         //shear
         for(let i = 0; i < this.shearPoints.length; i++){
             let direction = new THREE.Vector3(
-                this.shearPoints[i].position.x - this.position.x, 
-                this.shearPoints[i].position.y - this.position.y, 
-                this.shearPoints[i].position.z - this.position.z,).normalize();
+                this.shearPoints[i].position.x - curPos.x, 
+                this.shearPoints[i].position.y - curPos.y, 
+                this.shearPoints[i].position.z - curPos.z,).normalize();
 
-            direction = direction.multiplyScalar(this.calculateSpringForce(this.position, this.shearPoints[i].position, this.restingLengthConstant, this.shearConstant));
+            direction = direction.multiplyScalar(this.calculateSpringForce(curPos, this.shearPoints[i].position, this.restingLengthConstant, this.shearConstant));
             resultingForce.add(direction);
         }
         //bend
         for(let i = 0; i < this.bendPoints.length; i++){
             let direction = new THREE.Vector3(
-                this.bendPoints[i].position.x - this.position.x, 
-                this.bendPoints[i].position.y - this.position.y, 
-                this.bendPoints[i].position.z - this.position.z,).normalize();
+                this.bendPoints[i].position.x - curPos.x, 
+                this.bendPoints[i].position.y - curPos.y, 
+                this.bendPoints[i].position.z - curPos.z,).normalize();
 
-            direction = direction.multiplyScalar(this.calculateSpringForce(this.position, this.bendPoints[i].position, this.restingLengthConstant*2, this.bendConstant));
+            direction = direction.multiplyScalar(this.calculateSpringForce(curPos, this.bendPoints[i].position, this.restingLengthConstant*2, this.bendConstant));
             resultingForce.add(direction);
         }
         //gravity
@@ -90,6 +133,7 @@ export class ForcePoint {
         //end
         this.forceVector = resultingForce;
         //console.log("resulting force: " + resultingForce.x + ", " + resultingForce.y + ", " + resultingForce.z);
+        return resultingForce;
     }
     calculateSpringForce(point1, point2, restingLength, springKonstant){
         const distance = point1.distanceTo(point2);
@@ -97,8 +141,8 @@ export class ForcePoint {
         const SpringForce = -springKonstant*distanceToRestingLength*(distance / restingLength);
         return SpringForce;
     }
-    eulerValue(stepLenght){
-        const returnVector = this.forceVector.multiplyScalar(stepLenght);
+    eulerValue(stepLenght, force){
+        const returnVector = force.multiplyScalar(stepLenght);
         return returnVector;
     }
 
@@ -130,5 +174,8 @@ export class ForcePoint {
     }
     updateMass(value){
         this.mass = value;
+    }
+    updateClacMode(value){
+        this.calcMethod = value;
     }
 }

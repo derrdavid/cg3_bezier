@@ -17,6 +17,11 @@ const restingLengthSlider = document.getElementById("restinLengt-slider");
 const stepLengthSlider = document.getElementById("stepLength-slider");
 const massSlider = document.getElementById("mass-slider");
 
+const eulerSelector = document.getElementById("eulerSelect");
+const mispointSelector = document.getElementById("midpointSelect");
+const rungeSelector = document.getElementById("rungeSelect");
+const calcModeDisplay = document.getElementById("CalcModeDisplay");
+
 const { width, height } = canvas.getBoundingClientRect();
 const camera = new ToggleCamera(width, height);
 const renderer = setupRenderer(canvas, width, height);
@@ -45,16 +50,16 @@ function animate() {
 
     //--contolls--
     if(strech != strechhSlider.value){
-        //cloth.setNewStrech(strechhSlider.value);
+        cloth.setNewStrech(strechhSlider.value);
         strech = strechhSlider.value;
     }
-    if(strech != strechhSlider.value){
-        //cloth.setNewStrech(strechhSlider.value);
-        strech = strechhSlider.value;
+    if(shear != shearSlider.value){
+        cloth.setNewShear(shearSlider.value);
+        strech = shearSlider.value;
     }
-    if(strech != strechhSlider.value){
-        //cloth.setNewStrech(strechhSlider.value);
-        strech = strechhSlider.value;
+    if(bend != bendSlider.value){
+        cloth.setNewBend(bendSlider.value);
+        strech = bendSlider.value;
     }
 
     if(restingLength != restingLengthSlider.value){
@@ -81,3 +86,17 @@ function animate() {
     requestAnimationFrame(animate);
 }
 animate();
+
+//events--
+eulerSelector.addEventListener('click', () => {
+    cloth.setNewCalcMode("Euler");
+    calcModeDisplay.innerHTML = "Euler";
+});
+mispointSelector.addEventListener('click', () => {
+    cloth.setNewCalcMode("Midpoint");
+    calcModeDisplay.innerHTML = "Midpoint";
+});
+rungeSelector.addEventListener('click', () => {
+    cloth.setNewCalcMode("Runge");
+    calcModeDisplay.innerHTML = "Runge-Kuta";
+});

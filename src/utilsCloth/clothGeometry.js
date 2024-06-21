@@ -189,6 +189,21 @@ export class ClothGeometry {
         }
         //console.log(this.meshPoints[0].position);
     }
+    setNewStrech(value){
+        for(let i = 0; i < this.meshPoints.length; i ++){
+            this.meshPoints[i].updateSpringConstant(value);
+        }
+    }
+    setNewShear(value){
+        for(let i = 0; i < this.meshPoints.length; i ++){
+            this.meshPoints[i].updateShearConstant(value);
+        }
+    }
+    setNewBend(value){
+        for(let i = 0; i < this.meshPoints.length; i ++){
+            this.meshPoints[i].updateBendConstant(value);
+        }
+    }
     setNewRestingLength(value){
         for(let i = 0; i < this.meshPoints.length; i ++){
             this.meshPoints[i].updateRestingLenght(value);
@@ -204,9 +219,14 @@ export class ClothGeometry {
             this.meshPoints[i].updateMass(value);
         }
     }
+    setNewCalcMode(value){
+        for(let i = 0; i < this.meshPoints.length; i ++){
+            this.meshPoints[i].updateClacMode(value);
+        }
+    }
 
     addsphere(point) {
-        console.log(point.isPin)
+        //console.log(point.isPin)
         if (!point.isPin) {
             const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
             const geometry = new THREE.SphereGeometry(0.05, 8, 5);
