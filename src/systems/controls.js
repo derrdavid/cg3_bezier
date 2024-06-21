@@ -1,5 +1,6 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as THREE from 'three';
+import { int } from 'three/examples/jsm/nodes/Nodes.js';
 
 export function setupControls(camera, domElement) {
     const controls = new OrbitControls(camera, domElement);
@@ -9,8 +10,9 @@ export function setupControls(camera, domElement) {
 }
 
 export class ControlPointsManager {
-    constructor(scene, camera, inputFields) {
+    constructor(canvas, scene, camera, inputFields) {
         this.scene = scene;
+        this.canvas = canvas;
         this.camera = camera;
         this.inputFields = inputFields;
         
@@ -33,7 +35,7 @@ export class ControlPointsManager {
         window.addEventListener('mousedown', this.onMouseDown.bind(this));
         window.addEventListener('mouseup', this.onMouseUp.bind(this));
         window.addEventListener('mousemove', this.onMouseMove.bind(this));
-    };
+    }
 
     updateControlPoints() {
         this.inputFields.forEach((field, index) => {
@@ -53,7 +55,7 @@ export class ControlPointsManager {
 
     createSpheres() {
         this.controlPoints.forEach((point) => {
-            const geometry = new THREE.SphereGeometry(0.05, 32, 32);
+            const geometry = new THREE.SphereGeometry(0.1, 32, 32);
             const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
             const sphere = new THREE.Mesh(geometry, material);
 
@@ -61,17 +63,18 @@ export class ControlPointsManager {
             this.scene.add(sphere);
             this.spheres.push(sphere);
 
-            const boundingSphere = new THREE.Sphere(point.clone(), 1);
+            const boundingSphere = new THREE.Sphere(point, 1);
             this.boundingSpheres.push(boundingSphere);
         });
     }
 
     onPointerMove(event) {
-        this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-        this.pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+        const rect = this.canvas.getBoundingClientRect();
+        this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        this.pointer.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
     }
 
-    onMouseDown(event) {
+    onMouseDown() {
         this.raycaster.setFromCamera(this.pointer, this.camera.current);
         const intersects = this.boundingSpheres.filter((sphere) => {
             return this.raycaster.ray.intersectsSphere(sphere);
@@ -97,7 +100,7 @@ export class ControlPointsManager {
 
             if (intersects.length > 0) {
                 const sphere = this.spheres[this.draggedSphereIndex];
-                const newPoint = new THREE.Vector3(this.pointer.x, this.pointer.y, sphere.position.z);
+                const newPoint = new THREE.Vector3(this.pointer.x, this.pointer.y, 0);
                 newPoint.unproject(this.camera.current);
                 newPoint.z = sphere.position.z;
                 
