@@ -21,6 +21,7 @@ const toggleButton = document.getElementById('switchButton');
 const animateButton = document.getElementById('animate-button');
 
 const sphereManager = new ControlPointsManager(canvas, scene, camera, inputFields);
+sphereManager.createSpheres();
 const bezierCurve = new BezierCurve(sphereManager.controlPoints, scene);
 const axesHelper = new THREE.AxesHelper(20);
 scene.add(axesHelper);
