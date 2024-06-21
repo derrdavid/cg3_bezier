@@ -45,15 +45,15 @@ function animate() {
 
     //--contolls--
     if(strech != strechhSlider.value){
-        cloth.setNewStrech(strechhSlider.value);
+        //cloth.setNewStrech(strechhSlider.value);
         strech = strechhSlider.value;
     }
     if(strech != strechhSlider.value){
-        cloth.setNewStrech(strechhSlider.value);
+        //cloth.setNewStrech(strechhSlider.value);
         strech = strechhSlider.value;
     }
     if(strech != strechhSlider.value){
-        cloth.setNewStrech(strechhSlider.value);
+        //cloth.setNewStrech(strechhSlider.value);
         strech = strechhSlider.value;
     }
 
