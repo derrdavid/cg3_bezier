@@ -77,6 +77,12 @@ body {
     height: 100%;
     width: 100%;
 }
+#graphCanvas {
+    height: 120px;
+    width: 120px;
+}
+#stats {
+}
 
 button, input[type="text"] {
     font-family: var(--text-font);

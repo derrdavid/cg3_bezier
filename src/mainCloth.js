@@ -8,6 +8,7 @@ const scene = new THREE.Scene();
 const canvas = document.getElementById('canvas-container');
 
 const fpsLabel = document.getElementById("fpsLabel");
+const stepLenghtLabel = document.getElementById("stepLengthLabel");
 
 const strechhSlider = document.getElementById("strech-slider");
 const shearSlider = document.getElementById("shear-slider");
@@ -17,8 +18,11 @@ const restingLengthSlider = document.getElementById("restinLengt-slider");
 const stepLengthSlider = document.getElementById("stepLength-slider");
 const massSlider = document.getElementById("mass-slider");
 
+const forceField = document.getElementById("maxForce");
+
 const eulerSelector = document.getElementById("eulerSelect");
 const mispointSelector = document.getElementById("midpointSelect");
+const fourStepSelector = document.getElementById("fourSteptSelect");
 const rungeSelector = document.getElementById("rungeSelect");
 const calcModeDisplay = document.getElementById("CalcModeDisplay");
 
@@ -82,6 +86,7 @@ function animate() {
 
     time = Date.now() - time;
     fpsLabel.innerHTML = "fps: " + Math.round(1000 / time);
+    stepLenghtLabel.innerHTML = "Step Length: " + cloth.currentStepLenght;
     
     requestAnimationFrame(animate);
 }
@@ -96,7 +101,14 @@ mispointSelector.addEventListener('click', () => {
     cloth.setNewCalcMode("Midpoint");
     calcModeDisplay.innerHTML = "Midpoint";
 });
+fourStepSelector.addEventListener('click', () => {
+    cloth.setNewCalcMode("Fourstep");
+    calcModeDisplay.innerHTML = "Four-Step";
+});
 rungeSelector.addEventListener('click', () => {
     cloth.setNewCalcMode("Runge");
     calcModeDisplay.innerHTML = "Runge-Kuta";
+});
+forceField.addEventListener('change', () => {
+    cloth.setNewMax(forceField.value);
 });

@@ -6,11 +6,19 @@ import { setupControls, ControlPointsManager } from './systems/controls';
 import { BernsteinPolinom } from './utils/bernsteinPolinom';
 
 const scene = new THREE.Scene();
+const graphScene = new THREE.Scene();
 const canvas = document.getElementById('canvas-container');
+const graphCanvas = document.getElementById("graphCanvas");
+graphCanvas.style.display = "none";
 const { width, height } = canvas.getBoundingClientRect();
 
 const camera = new ToggleCamera(width, height);
+const graphCamera = new THREE.OrthographicCamera(-0.55, 0.55, 0.55, -0.55, 1, 1000);
+graphCamera.position.set(0.5, 0.5, 10);
+graphCamera.lookAt(0.5, 0.5, 0);
+
 const renderer = setupRenderer(canvas, width, height);
+const graphRenderer = setupRenderer(graphCanvas, 200, 200);
 const controls = setupControls(camera.current, renderer.domElement);
 
 // HTML-ELEMENTS
@@ -19,6 +27,7 @@ const slider = document.getElementById('t-slider');
 const updateButton = document.getElementById('update-curve');
 const toggleButton = document.getElementById('switchButton');
 const animateButton = document.getElementById('animate-button');
+const bernsteinButton = document.getElementById('BernsteinButton');
 const showaxis_checkbox = document.getElementById('show-axis');
 
 const sphereManager = new ControlPointsManager(canvas, scene, camera, inputFields);
@@ -27,7 +36,10 @@ const bezierCurve = new BezierCurve(sphereManager.controlPoints, scene);
 const axesHelper = new THREE.AxesHelper(20);
 scene.add(axesHelper);
 
+const bernsteinPolinom = new BernsteinPolinom(graphScene);
+
 let isAnimate = false;
+let bernsteinModus = false;
 let t = slider.value;
 const step = 0.005;
 
@@ -39,7 +51,12 @@ function animate() {
     }
     controls.update();
     bezierCurve.update(slider.value);
+    bernsteinPolinom.update(slider.value);
     renderer.render(scene, camera.current);
+    if(bernsteinModus){
+        graphCanvas.visible = false; 
+        graphRenderer.render(graphScene, graphCamera);
+    }
     requestAnimationFrame(animate);
 }
 animate();
@@ -60,6 +77,12 @@ toggleButton.addEventListener('click', () => {
 animateButton.addEventListener('click', () => {
     animateButton.innerHTML = isAnimate ? 'Start Animation' : 'Stop Animation';
     isAnimate = !isAnimate;
+});
+bernsteinButton.addEventListener('click', () => {
+    bernsteinModus = !bernsteinModus;
+    bernsteinButton.innerHTML = bernsteinModus ? 'de-Casteljau' : 'Bernstein-Polynome';
+    graphCanvas.style.display = bernsteinModus ? "block" : "none";
+    bezierCurve.switchLineMode(bernsteinModus);
 });
 
 inputFields.forEach((field, index) => {

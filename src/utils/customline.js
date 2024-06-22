@@ -13,4 +13,9 @@ export default class CustomLine {
         this.meshline.setGeometry(lineGeometry);
         this.line.geometry = this.meshline.geometry;
     }
+    setPointsWithWidth(newPoints, callback){
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints(newPoints);
+        this.meshline.setGeometry(lineGeometry, callback);
+        this.line.geometry = this.meshline.geometry;
+    }
 }

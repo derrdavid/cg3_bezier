@@ -10,6 +10,8 @@ export class ClothGeometry {
         this.meshPoints = [];
         this.meshEdges = [];
         this.meshSize = 12;
+        this.first = 0;
+        this.currentStepLenght = 0.003;
 
         this.initMesh();
         this.initForcePoints();
@@ -177,17 +179,35 @@ export class ClothGeometry {
                 this.meshEdges.push(edge);
         }*/ 
     }
+    showSinglevertex(){
+        for(let i = 0; i < this.meshEdges.length; i++){
+            console.log("ne");
+            this.meshEdges[i].linetodraw.visible = false;
+
+        }
+    }
 
     update() {
         let time = Date.now();
+        let newStepLenght = 100000;
         for (let i = 0; i < this.meshPoints.length; i++) {
             this.meshPoints[i].updateStep1();
             this.meshPoints[i].updateStep2();
+            //new step lenght determination
+            const sugestion = this.meshPoints[i].getSuggestetStepLength();
+            if(newStepLenght > sugestion){
+                newStepLenght = sugestion;
+            }
+        }
+        //this.setNewStepLenght(newStepLenght);
+        this.currentStepLenght = newStepLenght;
+        if(this.first < 100){
+            console.log(newStepLenght);
+            this.first++;
         }
         for (let i = 0; i < this.meshEdges.length; i++) {
             this.meshEdges[i].update();
         }
-        //console.log(this.meshPoints[0].position);
     }
     setNewStrech(value){
         for(let i = 0; i < this.meshPoints.length; i ++){
@@ -222,6 +242,11 @@ export class ClothGeometry {
     setNewCalcMode(value){
         for(let i = 0; i < this.meshPoints.length; i ++){
             this.meshPoints[i].updateClacMode(value);
+        }
+    }
+    setNewMax(value){
+        for(let i = 0; i < this.meshPoints.length; i ++){
+            this.meshPoints[i].updateMaxForce(value);
         }
     }
 

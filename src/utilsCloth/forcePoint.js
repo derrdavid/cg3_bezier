@@ -1,9 +1,10 @@
+import { combinations } from 'mathjs';
 import * as THREE from 'three';
-import { temp } from 'three/examples/jsm/nodes/Nodes.js';
 
 const CALC_METHOD = {
     EULER: 'Euler',
     MIDPOINT: 'Midpoint',
+    FOURSTEP: 'Fourstep',
     RUNGE: 'Runge'
 };
 
@@ -11,7 +12,7 @@ export class ForcePoint {
     constructor(point) {
         this.position = point;
 
-        this.calcMethod = CALC_METHOD.RUNGE;
+        this.calcMethod = CALC_METHOD.EULER;
 
         this.neigbours = [];
         this.shearPoints = [];
@@ -24,8 +25,11 @@ export class ForcePoint {
         this.restingLengthConstant = 0.4;
 
         this.stepLenght = 0.003;
+        this.suggestedNewStepLength = 0.003;
 
         this.mass = 0.01;
+
+        this.maxForce = 300;
 
         this.isPin = false;
         this.vertex = null;
@@ -34,10 +38,14 @@ export class ForcePoint {
     updateStep1(){
         if(!this.isPin){
             let tmpPos;
+            this.calculateForce(this.position);
+            const posForComparison = this.determineNewPosition(this.position, this.stepLenght, this.forceVector);
             switch(this.calcMethod){
                 case CALC_METHOD.EULER:
                     this.calculateForce(this.position);
                     this.position = this.determineNewPosition(this.position, this.stepLenght, this.forceVector);
+
+                    this.determineNewStepLength(posForComparison, this.position, 2);
                     break;
 
                 case CALC_METHOD.MIDPOINT:
@@ -45,10 +53,25 @@ export class ForcePoint {
                     tmpPos = this.determineNewPosition(this.position, this.stepLenght / 2, this.forceVector);
                     this.calculateForce(tmpPos);
                     this.position = this.determineNewPosition(tmpPos, this.stepLenght / 2, this.forceVector);
+
+                    this.determineNewStepLength(posForComparison, this.position, 3);
+                    break;
+
+                case CALC_METHOD.FOURSTEP:
+                    this.calculateForce(this.position);
+                    tmpPos = this.determineNewPosition(this.position, this.stepLenght / 6, this.forceVector);
+                    this.calculateForce(tmpPos);
+                    tmpPos = this.determineNewPosition(tmpPos, this.stepLenght / 3, this.forceVector);
+                    this.calculateForce(tmpPos);
+                    tmpPos = this.determineNewPosition(tmpPos, this.stepLenght / 3, this.forceVector);
+                    this.calculateForce(tmpPos);
+                    this.position = this.determineNewPosition(tmpPos, this.stepLenght / 6, this.forceVector);
+
+                    this.determineNewStepLength(posForComparison, this.position, 5);
                     break;
 
                 case CALC_METHOD.RUNGE:
-                    let k1 = this.calculateForce(this.position); 
+                    let k1 = this.calculateForce(this.position);
                     
                     tmpPos = this.determineNewPosition(this.position, this.stepLenght / 2, k1);
                     let k2 = this.calculateForce(tmpPos);
@@ -61,9 +84,11 @@ export class ForcePoint {
 
                     k2.multiplyScalar(2);
                     k3.multiplyScalar(2);
-                    const newForceVector = new THREE.Vector3(0,0,0).add(k1).add(k2).add(k3).add(k4);
+                    const newForceVector = new THREE.Vector3(0,0,0).add(k1).add(k2).add(k3).add(k4).divideScalar(6);
+                    newForceVector.multiplyScalar(this.stepLenght);
+                    this.position = this.position.add(newForceVector);
 
-                    this.position = this.determineNewPosition(this.position, this.stepLenght / 6, newForceVector);
+                    this.determineNewStepLength(posForComparison, this.position, 5);
                     break;
             }
         }
@@ -71,6 +96,16 @@ export class ForcePoint {
     updateStep2(){
         if(!this.isPin){
             this.updateVertexPos(this.position);
+        }
+    }
+    determineNewStepLength(x1, x2, fehlertoleranz){
+        if(fehlertoleranz == 2){
+            this.suggestedNewStepLength = 0.003;
+        }else{
+            const flawedValue = new THREE.Vector3().copy(x1);
+            const currentValue = new THREE.Vector3().copy(x2);
+            const flaw = flawedValue.distanceTo(currentValue);
+            this.suggestedNewStepLength =  (Math.sqrt( this.stepLenght / flaw) * this.stepLenght) / 100;
         }
     }
     addNeigbour(point){
@@ -138,8 +173,13 @@ export class ForcePoint {
     calculateSpringForce(point1, point2, restingLength, springKonstant){
         const distance = point1.distanceTo(point2);
         const distanceToRestingLength = restingLength-distance;
-        const SpringForce = -springKonstant*distanceToRestingLength*(distance / restingLength);
-        return SpringForce;
+        let springForce = -springKonstant*distanceToRestingLength*(distance / restingLength);
+        //clamp the force
+        const maxForce = this.maxForce;
+        if (Math.abs(springForce) > maxForce) {
+            springForce = Math.sign(springForce) * maxForce;
+        }
+        return springForce;
     }
     eulerValue(stepLenght, force){
         const returnVector = force.multiplyScalar(stepLenght);
@@ -177,5 +217,15 @@ export class ForcePoint {
     }
     updateClacMode(value){
         this.calcMethod = value;
+    }
+    updateMaxForce(value){
+        this.maxForce = value;
+    }
+    getSuggestetStepLength(){
+        if(this.isPin){
+            return 1000000000;
+        }else{
+            return this.suggestedNewStepLength;
+        }
     }
 }

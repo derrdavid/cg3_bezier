@@ -25,7 +25,8 @@
 	<div id="app-container">
 		<div id="canvas-container">
 			<div id="input-container">
-				<label id = "fpsLabel" for="fps">fps : 00</label>
+				<label id = "fpsLabel">fps : 00</label>
+				<label id = "stepLengthLabel">stepLenght : 00</label>
 				<div id = "controlls">
 					<label for="strech-slider">Strech</label>
 					<input id="strech-slider" type="range" min="1.0" max="100.0" step="0.01" value="50.0">
@@ -39,11 +40,16 @@
 					<input id="stepLength-slider" type="range" min="0.000001" max="0.01" step="0.0001" value="0.003">
 					<label for="mass-slider">Mass</label>
 					<input id="mass-slider" type="range" min="0.0" max="1.0" step="0.01" value="0.01">
+					<div>
+						<label for="maxForce">force:</label>
+						<input type="text" id="maxForce" placeholder="0" value="300">
+					</div>
 					<div class="dropdown">
 						<button class="dropbtn" id = "CalcModeDisplay">Euler</button>
 						<div class="dropdown-content">
 						  <a id="eulerSelect">Euler</a>
 						  <a id="midpointSelect">Midpoint</a>
+						  <a id="fourSteptSelect">FourStep</a>
 						  <a id="rungeSelect">Runge-Kuta</a>
 						</div>
 					  </div>
