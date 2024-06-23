@@ -200,7 +200,7 @@ export class ClothGeometry {
             }
         }
         //this.setNewStepLenght(newStepLenght);
-        this.currentStepLenght = newStepLenght;
+        this.currentStepLenght = this.meshPoints[1].stepLenght;
         if(this.first < 100){
             console.log(newStepLenght);
             this.first++;
