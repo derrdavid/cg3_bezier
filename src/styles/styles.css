@@ -188,7 +188,6 @@ input[type="range"]:hover::-moz-range-thumb {
     border: none;
   }
   
-  /* The container <div> - needed to position the dropdown content */
   .dropdown {
     position: relative;
     display: inline-block;
@@ -205,21 +204,18 @@ input[type="range"]:hover::-moz-range-thumb {
     z-index: 1;
   }
   
-  /* Links inside the dropdown */
   .dropdown-content a {
+    font-family: var(--text-font);
     color: rgb(255, 255, 255);
     padding: 10px 16px;
     text-decoration: none;
     display: block;
   }
   
-  /* Change color of dropdown links on hover */
   .dropdown-content a:hover {background-color: #4b4b4b;}
   
-  /* Show the dropdown menu on hover */
   .dropdown:hover .dropdown-content {display: block;}
   
-  /* Change the background color of the dropdown button when the dropdown content is shown */
   .dropdown:hover .dropbtn {background-color: #858585;}
 
 @media screen and (min-width: 750px) {

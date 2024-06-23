@@ -78,9 +78,10 @@ animateButton.addEventListener('click', () => {
     animateButton.innerHTML = isAnimate ? 'Start Animation' : 'Stop Animation';
     isAnimate = !isAnimate;
 });
+
 bernsteinButton.addEventListener('click', () => {
     bernsteinModus = !bernsteinModus;
-    bernsteinButton.innerHTML = bernsteinModus ? 'de-Casteljau' : 'Bernstein-Polynome';
+    bernsteinButton.innerHTML = bernsteinModus ? 'Bernstein-Polynomes' : 'De-Casteljau';
     graphCanvas.style.display = bernsteinModus ? "block" : "none";
     bezierCurve.switchLineMode(bernsteinModus);
 });

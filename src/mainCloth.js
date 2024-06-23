@@ -107,7 +107,7 @@ fourStepSelector.addEventListener('click', () => {
 });
 rungeSelector.addEventListener('click', () => {
     cloth.setNewCalcMode("Runge");
-    calcModeDisplay.innerHTML = "Runge-Kuta";
+    calcModeDisplay.innerHTML = "Runge-Kutta";
 });
 forceField.addEventListener('change', () => {
     cloth.setNewMax(forceField.value);
